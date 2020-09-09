@@ -1,49 +1,59 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
+import { Form, Input, InputNumber, Select, Switch, Checkbox, TreeSelect } from 'antd'
+import axios from 'axios'
 import PropTypes from 'prop-types'
+import ReactDOM from 'react-dom'
 import script from 'scriptjs'
-class LoadUmd extends Component {
-  state = {
-    Component: null,
-    error: null
-  }
-  static propTypes = {
-    url: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    props: PropTypes.object,
-    children: PropTypes.array
-  }
-  componentDidMount() {
-    window.React = React
-    window.PropTypes = PropTypes
-    // async load of remote UMD component
-    console.log('12312312312312', this.props)
-    script(this.props.url, () => {
-      const target = window[this.props.name]
+import RcSteps from 'rc-steps'
+import classNames from 'classnames'
+
+window.React = React
+window.PropTypes = PropTypes
+window.ReactDOM = ReactDOM
+window.RcSteps = RcSteps
+window.Form = Form
+window.Input = Input
+window.InputNumber = InputNumber
+window.Select = Select
+window.Switch = Switch
+window.Checkbox = Checkbox
+window.axios = axios
+window.TreeSelect = TreeSelect
+window.classNames = classNames
+const LoadUmd = props => {
+  const { url, name } = props
+  const [state, setState] = useState({ Component: null, error: null })
+  const loaderScript = useCallback((url, name) => {
+    script(url, () => {
+      const target = window[name]
 
       if (target) {
         // loaded OK
-        this.setState({
+        setState({
           error: null,
-          Component: target
+          Component: target.default ? target.default : target
         })
       } else {
         // loaded fail
-        this.setState({
-          error: `Cannot load component ${this.props.name} at ${this.props.url}`,
+        setState({
+          error: `Cannot load component ${name} at ${url}`,
           Component: null
         })
       }
     })
+  }, [])
+
+  useEffect(() => {
+    loaderScript(url, name)
+  }, [loaderScript, name, url])
+
+  if (state.Component) {
+    return <state.Component {...(props.props || {})} />
   }
-  render() {
-    if (this.state.Component) {
-      return <this.state.Component {...(this.props.props || {})} />
-    } else if (this.state.error) {
-      return <div>{this.state.error}</div>
-    } else {
-      return this.props.children
-    }
+  if (state.error) {
+    return <div>{state.error}</div>
   }
+  return props.children
 }
 
 export default LoadUmd
