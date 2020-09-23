@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react'
-import { Form, Input, InputNumber, Select, Switch, Checkbox, TreeSelect } from 'antd'
+import { Form, Input, InputNumber, Select, Switch, Checkbox, TreeSelect, Button } from 'antd'
 import axios from 'axios'
 import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
@@ -19,6 +19,7 @@ window.Switch = Switch
 window.Checkbox = Checkbox
 window.axios = axios
 window.TreeSelect = TreeSelect
+window.Button = Button
 window.classNames = classNames
 const LoadUmd = props => {
   const { url, name } = props
@@ -26,7 +27,6 @@ const LoadUmd = props => {
   const loaderScript = useCallback((url, name) => {
     script(url, () => {
       const target = window[name]
-
       if (target) {
         // loaded OK
         setState({

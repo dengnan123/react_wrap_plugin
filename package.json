@@ -1,6 +1,6 @@
 {
   "name": "react_wrap_plugin",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "react wrap  高阶组件",
   "main": "lib/index.js",
   "module": "es/index.js",
