@@ -1,13 +1,14 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
 import ReactDOM from 'react-dom'
 import UmdLoader from './components/UmdLoader'
+import ErrorWrap from './components/ErrorWrap'
 import { useDealwithEmitter } from './helpers/util'
 
 export default function warpPlugin(pluginPropsExt = {}) {
   return function warpPluginHoc(Comp) {
     return React.forwardRef((props, ref) => {
       const { plugins = [] } = pluginPropsExt
-      console.log('pluginspluginsplugins', plugins)
+      console.log('pluginspluginsplugins>>>>>>>>>>>>---------<<<<<<', plugins)
       const pluginRef = useRef(null)
       const [pagePlugins] = useState(plugins)
       const pluginRefHash = useRef({})
@@ -32,11 +33,11 @@ export default function warpPlugin(pluginPropsExt = {}) {
             pluginProps: {
               ...props,
               ...pluginPropsExt,
-              ...pluginProps
+              ...pluginProps,
             },
             ref: pluginRef,
             sendDataToParent,
-            propsData
+            propsData,
           }
 
           let cmp = (
@@ -45,6 +46,8 @@ export default function warpPlugin(pluginPropsExt = {}) {
             </UmdLoader>
           )
           pluginRefHash.current[pluginName] = cmp
+          console.log('cmpcmpcmpcmp', cmp)
+          console.log('eleeleele', ele)
           if (ele) {
             ReactDOM.render(cmp, ele)
           }
@@ -54,8 +57,8 @@ export default function warpPlugin(pluginPropsExt = {}) {
 
       useEffect(() => {
         pagePlugins
-          .filter(v => v.routerPath === pathname)
-          .map(v => {
+          .filter((v) => v.routerPath === pathname)
+          .map((v) => {
             const { mountDivs } = v
             for (const v of mountDivs) {
               renderPlugin(props, v, propsData)
@@ -68,7 +71,7 @@ export default function warpPlugin(pluginPropsExt = {}) {
         ...props,
         pluginRef,
         sendDataToPlugin,
-        pluginData
+        pluginData,
       }
       return <Comp {...compProps} />
     })

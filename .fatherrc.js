@@ -8,7 +8,7 @@ const options = {
   cjs: 'babel',
   autoprefixer: {
     browsers: ['ie>9', 'Safari >= 6']
-  }
+  },
 }
 
 export default options
